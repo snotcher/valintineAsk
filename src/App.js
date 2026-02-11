@@ -11,6 +11,57 @@ function App() {
   const [loadingText, setLoadingText] = useState("Processing answer...");
   const [progress, setProgress] = useState(0);
   const [started, setStarted] = useState(false);
+  const [musicReady, setMusicReady] = useState(false);
+  const playerRef = React.useRef(null);
+
+  React.useEffect(() => {
+    // 1. Load YouTube IFrame Player API code asynchronously.
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // 2. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    window.onYouTubeIframeAPIReady = () => {
+      playerRef.current = new window.YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: 'SOJpE1KMUbo',
+        playerVars: {
+          'autoplay': 1,
+          'loop': 1,
+          'playlist': 'SOJpE1KMUbo',
+          'controls': 0,
+          'showinfo': 0,
+          'enablejsapi': 1,
+          'playsinline': 1 // Crucial for mobile
+        },
+        events: {
+          'onReady': onPlayerReady,
+        }
+      });
+    };
+
+    return () => {
+      // Cleanup global callback if component unmounts
+      window.onYouTubeIframeAPIReady = null;
+    };
+  }, []);
+
+  const onPlayerReady = (event) => {
+    setMusicReady(true);
+    event.target.playVideo(); // Try auto-play (works on desktop)
+    event.target.setVolume(50); // Set volume
+  };
+
+  const handleStart = () => {
+    setStarted(true);
+    if (playerRef.current && playerRef.current.playVideo) {
+      playerRef.current.playVideo(); // Force play on user interaction (Mobile fix)
+      playerRef.current.unMute(); // Ensure unmuted
+    }
+  };
 
   const phrases = [
     "No",
@@ -226,31 +277,15 @@ function App() {
 
   return (
     <div className="App">
+      {/* YouTube Player Container - Always in DOM but hidden */}
+      <div id="youtube-player" style={{ position: 'absolute', top: -9999, left: -9999 }}></div>
+
       {!started ? (
-        <button className="start-button" onClick={() => setStarted(true)}>
-          Tap to Open 💌
+        <button className="start-button" onClick={handleStart}>
+          {musicReady ? "Tap to Open 💌" : "Loading... 💌"}
         </button>
       ) : (
         <>
-          {/* Background Music - Hidden/Autoplay */}
-          <iframe
-            src="https://www.youtube.com/embed/SOJpE1KMUbo?autoplay=1&loop=1&playlist=SOJpE1KMUbo&enablejsapi=1&playsinline=1"
-            title="background-music"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: -1,
-              opacity: 0.01,
-              pointerEvents: 'none'
-            }}
-          />
-
           {/* Falling Hearts Animation Background */}
           <FallingHearts />
 
