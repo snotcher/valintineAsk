@@ -10,6 +10,7 @@ function App() {
   const [currentStep, setCurrentStep] = useState(0);
   const [loadingText, setLoadingText] = useState("Processing answer...");
   const [progress, setProgress] = useState(0);
+  const [started, setStarted] = useState(false);
 
   const phrases = [
     "No",
@@ -225,21 +226,30 @@ function App() {
 
   return (
     <div className="App">
-      {/* Background Music - Hidden/Autoplay */}
-      <iframe
-        width="0"
-        height="0"
-        src="https://www.youtube.com/embed/SOJpE1KMUbo?autoplay=1&loop=1&playlist=SOJpE1KMUbo"
-        title="background-music"
-        frameBorder="0"
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-      />
+      {!started ? (
+        <button className="start-button" onClick={() => setStarted(true)}>
+          Tap to Open 💌
+        </button>
+      ) : (
+        <>
+          {/* Background Music - Hidden/Autoplay */}
+          <iframe
+            width="1"
+            height="1"
+            src="https://www.youtube.com/embed/SOJpE1KMUbo?autoplay=1&loop=1&playlist=SOJpE1KMUbo&enablejsapi=1"
+            title="background-music"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+          />
 
-      {/* Falling Hearts Animation Background */}
-      <FallingHearts />
+          {/* Falling Hearts Animation Background */}
+          <FallingHearts />
 
-      {renderStep()}
+          {renderStep()}
+        </>
+      )}
     </div>
   );
 }
