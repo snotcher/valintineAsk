@@ -234,14 +234,21 @@ function App() {
         <>
           {/* Background Music - Hidden/Autoplay */}
           <iframe
-            width="1"
-            height="1"
-            src="https://www.youtube.com/embed/SOJpE1KMUbo?autoplay=1&loop=1&playlist=SOJpE1KMUbo&enablejsapi=1"
+            src="https://www.youtube.com/embed/SOJpE1KMUbo?autoplay=1&loop=1&playlist=SOJpE1KMUbo&enablejsapi=1&playsinline=1"
             title="background-music"
             frameBorder="0"
-            allow="autoplay; encrypted-media"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              zIndex: -1,
+              opacity: 0.01,
+              pointerEvents: 'none'
+            }}
           />
 
           {/* Falling Hearts Animation Background */}
